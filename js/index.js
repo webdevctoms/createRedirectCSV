@@ -1,6 +1,5 @@
-function App(dropZoneID,downloadID,testButtonID,convertButtonID,templateDropID){
+function App(dropZoneID,downloadID,testButtonID,convertButtonID){
 	this.csvDropZone = document.getElementById(dropZoneID);
-	this.templateDropZone = document.getElementById(templateDropID);
 	this.downloadLink = document.getElementById(downloadID);
 	this.testButton = document.getElementById(testButtonID);
 	this.convertButton = document.getElementById(convertButtonID);
@@ -8,7 +7,7 @@ function App(dropZoneID,downloadID,testButtonID,convertButtonID,templateDropID){
 	this.newShopifyData;
 	this.templateHeadingLength = 19;
 	this.commaSplitData;
-	this.numFixer;
+	this.redirectCreate;
 	this.captureCSV = new CaptureCSV();
 	this.initApp();
 }
@@ -34,16 +33,6 @@ App.prototype.initApp = function() {
 		this.convertClicked();
 	}.bind(this),false);
 
-	this.templateDropZone.addEventListener("drop",function(e){
-		e.preventDefault();
-		this.fileDropped(e);
-	}.bind(this),false);
-
-	//need this to prevent default downloading of file
-	this.templateDropZone.addEventListener("dragover",function(e){
-		e.preventDefault();
-	}.bind(this),false);
-
 };
 
 App.prototype.fileDropped = function(event){
@@ -51,9 +40,9 @@ App.prototype.fileDropped = function(event){
 	this.captureCSV.readFile(csvFile)
 
 	.then(commaSplitData => {
-		
+		this.redirectCreate = new CreateRedirect(commaSplitData);
 		console.log(commaSplitData);
-
+		this.redirectCreate.convertData();
 	})
 
 	.catch(err => {
